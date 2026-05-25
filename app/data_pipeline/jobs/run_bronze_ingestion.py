@@ -12,7 +12,9 @@ from app.data_pipeline.orchestration import (
     PipelineStoragePaths,
 )
 
-CONFIG_PATH = Path("app/config/curated_studies.json")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+CONFIG_PATH = PROJECT_ROOT / "app" / "config" / "curated_studies.json"
+DEFAULT_STORAGE_ROOT = PROJECT_ROOT / "app" / "storage"
 
 
 def _write_json(path: Path, data: object) -> None:
@@ -21,7 +23,7 @@ def _write_json(path: Path, data: object) -> None:
 
 
 def run_bronze_ingestion(
-    storage_root: Path = Path("app/storage"),
+    storage_root: Path = DEFAULT_STORAGE_ROOT,
     config_path: Path = CONFIG_PATH,
 ) -> PipelineManifest:
     started_at = datetime.now(UTC)

@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class BronzeStudySnapshot(BaseModel):
@@ -23,3 +23,9 @@ class BronzeStudySnapshot(BaseModel):
     curation_notes: list[str] = Field(default_factory=list)
     metadata_quality_flags: list[str] = Field(default_factory=list)
     ingested_at: datetime
+
+    @model_validator(mode="after")
+    def _sample_count_must_match_groups(self) -> "BronzeStudySnapshot":
+        if self.sample_count != self.case_sample_count + self.control_sample_count:
+            raise ValueError("sample_count must equal case_sample_count + control_sample_count")
+        return self

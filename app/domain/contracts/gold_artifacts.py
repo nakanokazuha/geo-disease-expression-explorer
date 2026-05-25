@@ -5,7 +5,12 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from app.domain.contracts.export_contract import ExportContext
-from app.domain.enums import CountryMetadataStatus, EffectDirection, EffectDirectionFilter, SourceSystem
+from app.domain.enums import (
+    CountryMetadataStatus,
+    EffectDirection,
+    EffectDirectionFilter,
+    SourceSystem,
+)
 
 
 class ContractBaseModel(BaseModel):
@@ -148,7 +153,10 @@ class FilterOptions(ContractBaseModel):
 
     @model_validator(mode="after")
     def _country_filter_requires_reliable_metadata(self) -> "FilterOptions":
-        if self.country_filter_enabled and self.country_metadata_status is not CountryMetadataStatus.RELIABLE:
+        if (
+            self.country_filter_enabled
+            and self.country_metadata_status is not CountryMetadataStatus.RELIABLE
+        ):
             raise ValueError("country filter requires reliable country metadata")
         if self.country_filter_enabled and not self.countries:
             raise ValueError("country filter requires at least one country option")

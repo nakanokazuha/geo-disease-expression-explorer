@@ -23,7 +23,6 @@ from app.domain.enums import (
     SourceSystem,
 )
 
-
 GENERATED_AT = datetime(2026, 5, 25, tzinfo=UTC)
 
 

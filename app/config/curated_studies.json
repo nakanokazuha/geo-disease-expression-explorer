@@ -1,0 +1,30 @@
+[
+  {
+    "study_accession": "GSE000001",
+    "study_title": "Skeleton Long COVID blood study",
+    "organism": "Homo sapiens",
+    "platform": "GPL000",
+    "sample_count": 24,
+    "case_sample_count": 12,
+    "control_sample_count": 12,
+    "sample_sources": ["blood"],
+    "countries": [],
+    "source_urls": ["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE000001"],
+    "curation_notes": ["Pipeline skeleton record for shape validation only."],
+    "metadata_quality_flags": ["country_unavailable", "skeleton_record"]
+  },
+  {
+    "study_accession": "GSE000002",
+    "study_title": "Skeleton Long COVID PBMC study",
+    "organism": "Homo sapiens",
+    "platform": "GPL001",
+    "sample_count": 30,
+    "case_sample_count": 15,
+    "control_sample_count": 15,
+    "sample_sources": ["PBMC"],
+    "countries": [],
+    "source_urls": ["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE000002"],
+    "curation_notes": ["Pipeline skeleton record for shape validation only."],
+    "metadata_quality_flags": ["country_unavailable", "skeleton_record"]
+  }
+]

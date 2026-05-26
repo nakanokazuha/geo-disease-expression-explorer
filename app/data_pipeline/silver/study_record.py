@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field
 class SilverStudyRecord(BaseModel):
     """Standardized study metadata record for downstream Gold publication."""
 
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", strict=True)
 
     study_accession: str = Field(min_length=1)
     study_title: str = Field(min_length=1)

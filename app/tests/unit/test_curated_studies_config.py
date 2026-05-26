@@ -28,5 +28,7 @@ def test_curated_studies_config_has_required_skeleton_records() -> None:
         assert required_fields <= set(record)
         assert record["study_accession"].startswith("GSE")
         assert record["organism"] == "Homo sapiens"
-        assert record["sample_count"] == record["case_sample_count"] + record["control_sample_count"]
+        assert record["sample_count"] == (
+            record["case_sample_count"] + record["control_sample_count"]
+        )
         assert record["curation_notes"]

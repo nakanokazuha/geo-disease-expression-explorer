@@ -57,6 +57,14 @@ def _study_sample_counts(records: list[SilverStudyRecord]) -> dict[str, int]:
     }
 
 
+def _sample_source_counts(records: list[SilverStudyRecord]) -> dict[str, int]:
+    counter: Counter[str] = Counter()
+    for record in records:
+        for sample_source in record.sample_sources:
+            counter[sample_source] += record.sample_count
+    return dict(sorted(counter.items()))
+
+
 def _study_summary(records: list[SilverStudyRecord]) -> list[StudySummaryRecord]:
     return [
         StudySummaryRecord.model_validate(record.model_dump(mode="json"))
@@ -104,7 +112,7 @@ def _build_gold_bundle(
             control_sample_count=sum(
                 record.control_sample_count for record in included_records
             ),
-            sample_source_counts=_count_values(included_records, "sample_sources"),
+            sample_source_counts=_sample_source_counts(included_records),
             study_sample_counts=_study_sample_counts(included_records),
             country_counts={},
             country_metadata_status=CountryMetadataStatus.UNAVAILABLE,

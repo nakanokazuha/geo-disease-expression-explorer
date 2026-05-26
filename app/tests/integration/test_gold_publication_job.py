@@ -23,5 +23,6 @@ def test_gold_publication_writes_contract_valid_bundle(tmp_path: Path) -> None:
     assert manifest.status is PipelineStatus.SUCCESS
     assert manifest.record_count == 1
     assert bundle.dashboard_summary.included_study_count == 2
+    assert bundle.dashboard_summary.sample_source_counts == {"PBMC": 30, "blood": 24}
     assert bundle.filter_options.country_filter_enabled is False
     assert bundle.filter_options.country_metadata_status is CountryMetadataStatus.UNAVAILABLE

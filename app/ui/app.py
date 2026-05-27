@@ -3,7 +3,7 @@
 import streamlit as st
 
 from app.ui.data_access import GoldArtifactNotFoundError, load_gold_bundle
-from app.ui.views import render_dashboard_overview
+from app.ui.views import render_dashboard_interactions, render_dashboard_overview
 
 
 def _render_missing_gold_artifact(error: GoldArtifactNotFoundError) -> None:
@@ -31,6 +31,7 @@ def main() -> None:
         return
 
     render_dashboard_overview(bundle)
+    render_dashboard_interactions(bundle)
 
 
 if __name__ == "__main__":

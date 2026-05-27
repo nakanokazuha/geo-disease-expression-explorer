@@ -87,18 +87,55 @@ def test_streamlit_entrypoint_stays_thin() -> None:
 
 
 def test_ui_modules_do_not_import_pipeline_or_heavy_analysis() -> None:
-    ui_module_paths = [
-        Path("app/ui/app.py"),
-        Path("app/ui/data_access/gold_loader.py"),
-        Path("app/ui/views/dashboard_overview.py"),
-    ]
+    ui_module_paths = sorted(Path("app/ui").rglob("*.py"))
 
     for ui_module_path in ui_module_paths:
         _assert_no_forbidden_imports(ui_module_path)
 
 
-def test_entrypoint_handles_missing_gold_artifact() -> None:
+def test_entrypoint_handles_missing_gold_artifact(monkeypatch) -> None:
+    import app.ui.app as ui_app
+
     source = Path("app/ui/app.py").read_text(encoding="utf-8")
+    calls: list[tuple[str, tuple[object, ...]]] = []
+
+    def record_call(name: str):
+        def recorder(*args: object, **_kwargs: object) -> None:
+            calls.append((name, args))
+
+        return recorder
+
+    def raise_missing_gold() -> object:
+        raise ui_app.GoldArtifactNotFoundError("missing")
+
+    def fail_dashboard_render(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("dashboard renderers must not be called")
+
+    monkeypatch.setattr(ui_app, "load_gold_bundle", raise_missing_gold)
+    monkeypatch.setattr(ui_app.st, "set_page_config", record_call("set_page_config"))
+    monkeypatch.setattr(ui_app.st, "title", record_call("title"))
+    monkeypatch.setattr(ui_app.st, "caption", record_call("caption"))
+    monkeypatch.setattr(ui_app.st, "warning", record_call("warning"))
+    monkeypatch.setattr(ui_app.st, "info", record_call("info"))
+    monkeypatch.setattr(ui_app.st, "code", record_call("code"))
+    monkeypatch.setattr(ui_app, "render_dashboard_overview", fail_dashboard_render)
+    monkeypatch.setattr(
+        ui_app,
+        "render_dashboard_interactions",
+        fail_dashboard_render,
+    )
+
+    ui_app.main()
 
     assert "GoldArtifactNotFoundError" in source
+    assert "run_full_refresh" not in source
+    assert ("warning", ("No published Gold artifact bundle is available yet.",)) in calls
+    assert any(name == "info" for name, _args in calls)
+    assert ("code", ("missing",)) in calls
+
+
+def test_entrypoint_renders_dashboard_interactions() -> None:
+    source = Path("app/ui/app.py").read_text(encoding="utf-8")
+
+    assert "render_dashboard_interactions" in source
     assert "run_full_refresh" not in source

@@ -14,6 +14,8 @@ from app.ui.state import (
     build_default_filter_state,
 )
 from app.ui.views.deg_table import render_deg_table
+from app.ui.views.heatmap_view import render_heatmap_view
+from app.ui.views.volcano_plot import render_volcano_plot
 
 COUNTRY_FILTER_DISABLED_NOTICE = (
     "Country metadata is available, but country filtering is not supported "
@@ -140,12 +142,22 @@ def _render_filtered_deg_export_control(
     )
 
 
+def _render_visualizations(
+    bundle: GoldArtifactBundle,
+    state: DashboardFilterState,
+) -> None:
+    st.subheader("Visualizations")
+    render_volcano_plot(bundle.volcano_points, state)
+    render_heatmap_view(bundle.heatmap_matrix)
+
+
 def render_dashboard_interactions(bundle: GoldArtifactBundle) -> None:
     """Render sidebar filters, filtered DEG table, and filtered CSV export."""
 
     state = _render_sidebar_filters(bundle.filter_options)
     model = build_dashboard_interaction_model(bundle, state)
 
+    _render_visualizations(bundle, state)
     render_deg_table(model.filtered_records)
     _render_filtered_deg_export_control(bundle, model)
 

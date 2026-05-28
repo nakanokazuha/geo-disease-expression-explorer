@@ -1,6 +1,7 @@
-import inspect
 from datetime import UTC, datetime
+from types import SimpleNamespace
 
+import app.ui.views as views
 import app.ui.views.dashboard_interactions as dashboard_interactions
 from app.domain.contracts import (
     DashboardSummary,
@@ -222,8 +223,166 @@ def test_interaction_model_reports_export_not_allowed_when_kind_absent() -> None
     assert model.filtered_deg_export_allowed is False
 
 
-def test_filtered_deg_download_button_uses_stable_key_without_rerun() -> None:
-    source = inspect.getsource(dashboard_interactions._render_filtered_deg_export_control)
+def test_filtered_deg_download_button_uses_stable_key_without_rerun(
+    monkeypatch,
+) -> None:
+    bundle = _bundle()
+    state = DashboardFilterState(
+        adjusted_p_value=0.05,
+        log2_fold_change=1.0,
+        selected_studies=[],
+        selected_sample_sources=[],
+        effect_direction=EffectDirectionFilter.ALL,
+        selected_countries=[],
+        country_filter_available=False,
+        country_filter_note="Country filtering is unavailable.",
+    )
+    model = dashboard_interactions.DashboardInteractionModel(
+        filter_state=state,
+        filtered_records=bundle.merged_deg_table,
+        filtered_result_count=len(bundle.merged_deg_table),
+        filtered_deg_export_allowed=True,
+        country_filter_notice="Country filtering is unavailable.",
+        export_disclaimer="For exploratory research use only.",
+    )
+    captured_download_button: dict[str, object] = {}
 
-    assert 'key="filtered_deg_csv_download"' in source
-    assert 'on_click="ignore"' in source
+    monkeypatch.setattr(dashboard_interactions.st, "subheader", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(dashboard_interactions.st, "caption", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(
+        dashboard_interactions,
+        "build_filtered_deg_csv_export",
+        lambda **_kwargs: SimpleNamespace(
+            csv_text="gene_symbol\nIFITM3\n",
+            filename="filtered.csv",
+            mime_type="text/csv",
+        ),
+    )
+
+    def capture_download_button(*_args, **kwargs) -> None:
+        captured_download_button.update(kwargs)
+
+    monkeypatch.setattr(
+        dashboard_interactions.st,
+        "download_button",
+        capture_download_button,
+    )
+
+    dashboard_interactions._render_filtered_deg_export_control(bundle, model)
+
+    assert captured_download_button["key"] == "filtered_deg_csv_download"
+    assert captured_download_button["on_click"] == "ignore"
+
+
+def test_dashboard_interactions_render_visualizations_before_deg_table(
+    monkeypatch,
+) -> None:
+    bundle = _bundle()
+    state = DashboardFilterState(
+        adjusted_p_value=0.05,
+        log2_fold_change=1.0,
+        selected_studies=[],
+        selected_sample_sources=[],
+        effect_direction=EffectDirectionFilter.ALL,
+        selected_countries=[],
+        country_filter_available=False,
+        country_filter_note="Country filtering is unavailable.",
+    )
+    model = dashboard_interactions.DashboardInteractionModel(
+        filter_state=state,
+        filtered_records=bundle.merged_deg_table,
+        filtered_result_count=len(bundle.merged_deg_table),
+        filtered_deg_export_allowed=True,
+        country_filter_notice="Country filtering is unavailable.",
+        export_disclaimer="For exploratory research use only.",
+    )
+    order: list[str] = []
+
+    monkeypatch.setattr(
+        dashboard_interactions,
+        "_render_sidebar_filters",
+        lambda _filter_options: state,
+    )
+    monkeypatch.setattr(
+        dashboard_interactions,
+        "build_dashboard_interaction_model",
+        lambda _bundle, _state: model,
+    )
+    monkeypatch.setattr(
+        dashboard_interactions,
+        "_render_visualizations",
+        lambda _bundle, _state: order.append("visualizations"),
+    )
+    monkeypatch.setattr(
+        dashboard_interactions,
+        "render_deg_table",
+        lambda _records: order.append("deg_table"),
+    )
+    monkeypatch.setattr(
+        dashboard_interactions,
+        "_render_filtered_deg_export_control",
+        lambda _bundle, _model: order.append("export"),
+    )
+
+    dashboard_interactions.render_dashboard_interactions(bundle)
+
+    assert order == ["visualizations", "deg_table", "export"]
+
+
+def test_dashboard_visualizations_call_volcano_plot_and_heatmap_view(
+    monkeypatch,
+) -> None:
+    bundle = _bundle()
+    state = DashboardFilterState(
+        adjusted_p_value=0.05,
+        log2_fold_change=1.0,
+        selected_studies=[],
+        selected_sample_sources=[],
+        effect_direction=EffectDirectionFilter.ALL,
+        selected_countries=[],
+        country_filter_available=False,
+        country_filter_note="Country filtering is unavailable.",
+    )
+    calls: list[str] = []
+
+    def capture_volcano_plot(points, received_state) -> None:
+        assert points is bundle.volcano_points
+        assert received_state is state
+        calls.append("volcano")
+
+    def capture_heatmap_view(matrix) -> None:
+        assert matrix is bundle.heatmap_matrix
+        calls.append("heatmap")
+
+    monkeypatch.setattr(dashboard_interactions.st, "subheader", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(
+        dashboard_interactions,
+        "render_volcano_plot",
+        capture_volcano_plot,
+    )
+    monkeypatch.setattr(
+        dashboard_interactions,
+        "render_heatmap_view",
+        capture_heatmap_view,
+    )
+
+    dashboard_interactions._render_visualizations(bundle, state)
+
+    assert calls == ["volcano", "heatmap"]
+
+
+def test_views_package_exports_visualization_helpers() -> None:
+    expected_exports = {
+        "VolcanoPlotModel",
+        "build_volcano_plot_model",
+        "build_volcano_figure",
+        "render_volcano_plot",
+        "HeatmapViewModel",
+        "build_heatmap_view_model",
+        "build_heatmap_figure",
+        "render_heatmap_view",
+    }
+
+    assert expected_exports.issubset(set(views.__all__))
+    for export_name in expected_exports:
+        assert hasattr(views, export_name)

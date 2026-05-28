@@ -93,6 +93,13 @@ def test_ui_modules_do_not_import_pipeline_or_heavy_analysis() -> None:
         _assert_no_forbidden_imports(ui_module_path)
 
 
+def test_ui_import_boundary_scan_includes_visualization_views() -> None:
+    ui_module_paths = sorted(Path("app/ui").rglob("*.py"))
+
+    assert Path("app/ui/views/volcano_plot.py") in ui_module_paths
+    assert Path("app/ui/views/heatmap_view.py") in ui_module_paths
+
+
 def test_entrypoint_handles_missing_gold_artifact(monkeypatch) -> None:
     import app.ui.app as ui_app
 

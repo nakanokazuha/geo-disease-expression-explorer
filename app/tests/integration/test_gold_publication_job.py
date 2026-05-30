@@ -22,7 +22,38 @@ def test_gold_publication_writes_contract_valid_bundle(tmp_path: Path) -> None:
     assert manifest.stage is PipelineStage.GOLD_PUBLICATION
     assert manifest.status is PipelineStatus.SUCCESS
     assert manifest.record_count == 1
-    assert bundle.dashboard_summary.included_study_count == 2
-    assert bundle.dashboard_summary.sample_source_counts == {"PBMC": 30, "blood": 24}
+    assert bundle.dashboard_summary.included_study_count == 3
+    assert bundle.dashboard_summary.included_sample_count == 183
+    assert bundle.dashboard_summary.case_sample_count == 19
+    assert bundle.dashboard_summary.control_sample_count == 17
+    assert bundle.dashboard_summary.sample_source_counts == {
+        "blood-derived immune cells": 36,
+        "whole blood": 147,
+    }
+    assert bundle.dashboard_summary.study_sample_counts == {
+        "GSE224615": 36,
+        "GSE267625": 111,
+        "GSE270045": 36,
+    }
+    assert bundle.dashboard_summary.provenance.included_studies == [
+        "GSE224615",
+        "GSE267625",
+        "GSE270045",
+    ]
+    assert bundle.filter_options.studies == [
+        "GSE224615",
+        "GSE267625",
+        "GSE270045",
+    ]
+    assert (
+        "catalog-included metadata records"
+        in bundle.dashboard_summary.provenance.curation_notes[0]
+    )
+    assert (
+        "metadata-catalog sample counts"
+        in bundle.dashboard_summary.provenance.metadata_quality_notes[0]
+    )
+    assert "curated metadata skeleton bundle" in bundle.export_context.provenance_statement
+    assert "not expression-ready" in bundle.export_context.disclaimer
     assert bundle.filter_options.country_filter_enabled is False
     assert bundle.filter_options.country_metadata_status is CountryMetadataStatus.UNAVAILABLE

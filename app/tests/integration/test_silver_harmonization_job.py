@@ -24,10 +24,14 @@ def test_silver_harmonization_writes_standardized_records(tmp_path: Path) -> Non
     assert len(records) == 3
 
     validated_records = [SilverStudyRecord.model_validate(record) for record in records]
+    records_by_accession = {
+        record.study_accession: record for record in validated_records
+    }
 
     assert all(record.included for record in validated_records)
-    assert validated_records[0].study_accession == "GSE224615"
-    assert validated_records[0].sample_sources == ["blood-derived immune cells"]
+    assert records_by_accession["GSE224615"].sample_sources == [
+        "blood-derived immune cells"
+    ]
 
 
 def test_silver_harmonization_keeps_metadata_only_active_records(

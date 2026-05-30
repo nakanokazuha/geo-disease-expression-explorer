@@ -86,8 +86,15 @@ def _build_gold_bundle(
         generated_at=generated_at,
         source_system=SourceSystem.GEO,
         included_studies=included_studies,
-        curation_notes=["Gold skeleton generated from validated Silver study metadata."],
-        metadata_quality_notes=["Country metadata is unavailable for skeleton filtering."],
+        curation_notes=[
+            "Gold skeleton generated from catalog-included metadata records in Silver."
+        ],
+        metadata_quality_notes=[
+            "Dashboard sample source totals are metadata-catalog sample counts; "
+            "metadata-only records may not have verified expression-ready case/control "
+            "counts.",
+            "Country metadata is unavailable for skeleton filtering.",
+        ],
     )
     threshold_context = ThresholdContext(
         adjusted_p_value=0.05,
@@ -181,10 +188,13 @@ def _build_gold_bundle(
             included_studies=included_studies,
             threshold_context=threshold_context,
             provenance_statement=(
-                "Skeleton export context generated from curated public study metadata."
+                "curated metadata skeleton bundle generated from public study metadata "
+                "catalog records."
             ),
             disclaimer=(
-                "Skeleton artifact for pipeline validation only; not clinical or diagnostic."
+                "Skeleton artifact for pipeline validation only; catalog-included "
+                "metadata records are not expression-ready real DEG findings and are "
+                "not clinical or diagnostic."
             ),
             allowed_export_kinds=[
                 ExportKind.FILTERED_DEG_CSV,
@@ -218,7 +228,9 @@ def run_gold_publication(
         input_paths=[paths.silver_studies],
         output_paths=[paths.gold_bundle],
         record_count=1,
-        notes=["Gold skeleton wrote a contract-valid publication bundle."],
+        notes=[
+            "Gold skeleton wrote a contract-valid curated metadata publication bundle."
+        ],
     )
     _write_json(
         paths.manifest_path(PipelineStage.GOLD_PUBLICATION),

@@ -1,30 +1,261 @@
 [
   {
-    "study_accession": "GSE000001",
-    "study_title": "Skeleton Long COVID blood study",
+    "study_accession": "GSE224615",
+    "study_title": "Long COVID manifests with T cell dysregulation, inflammation, and an uncoordinated adaptive immune response to SARS-CoV-2",
     "organism": "Homo sapiens",
-    "platform": "GPL000",
-    "sample_count": 24,
-    "case_sample_count": 12,
-    "control_sample_count": 12,
-    "sample_sources": ["blood"],
+    "platforms": [
+      {
+        "accession": "GPL20301",
+        "name": "Illumina HiSeq 4000"
+      }
+    ],
+    "sample_count": 36,
+    "case_sample_count": 0,
+    "control_sample_count": 0,
+    "sample_sources": ["blood-derived immune cells"],
     "countries": [],
-    "source_urls": ["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE000001"],
-    "curation_notes": ["Pipeline skeleton record for shape validation only."],
-    "metadata_quality_flags": ["country_unavailable", "skeleton_record"]
+    "source_urls": ["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE224615"],
+    "publication_urls": [
+      "https://www.nature.com/articles/s41590-023-01724-6",
+      "https://doi.org/10.1038/s41590-023-01724-6"
+    ],
+    "curation_status": "primary metadata candidate",
+    "pipeline_active": true,
+    "expression_candidate": false,
+    "phenotype_label_status": "visible labels need sample-level verification",
+    "curation_notes": [
+      "Bulk RNA-seq study with visible PASC and non-PASC sample labels on GEO.",
+      "Exact case/control counts and sample-source standardization require sample-level metadata verification before expression processing."
+    ],
+    "metadata_quality_flags": [
+      "participant_country_unverified",
+      "case_control_counts_need_verification",
+      "sample_source_needs_verification"
+    ]
   },
   {
-    "study_accession": "GSE000002",
-    "study_title": "Skeleton Long COVID PBMC study",
+    "study_accession": "GSE270045",
+    "study_title": "Upregulation of olfactory receptors and neuronal-associated genes highlights complex immune and neuronal dysregulation in Long COVID patients",
     "organism": "Homo sapiens",
-    "platform": "GPL001",
-    "sample_count": 30,
-    "case_sample_count": 15,
-    "control_sample_count": 15,
+    "platforms": [
+      {
+        "accession": "GPL34284",
+        "name": "Illumina NovaSeq X Plus"
+      }
+    ],
+    "sample_count": 36,
+    "case_sample_count": 19,
+    "control_sample_count": 17,
+    "sample_sources": ["whole blood"],
+    "countries": [],
+    "source_urls": ["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE270045"],
+    "publication_urls": ["https://pubmed.ncbi.nlm.nih.gov/41205594/"],
+    "curation_status": "primary metadata + first expression candidate",
+    "pipeline_active": true,
+    "expression_candidate": true,
+    "phenotype_label_status": "verified from GEO summary",
+    "curation_notes": [
+      "GEO summary states RNA was isolated from whole blood of 19 Long COVID ME/CFS subgroup patients and 17 healthy controls.",
+      "Supplementary counts file GSE270045_LC_counts.tsv.gz makes this the first expression candidate for a later milestone.",
+      "Phenotype caveat: cases represent patients who developed ME/CFS following acute SARS-CoV-2 infection, not a generic Long COVID cohort."
+    ],
+    "metadata_quality_flags": [
+      "participant_country_unverified",
+      "long_covid_mecfs_subgroup",
+      "healthy_control_comparator"
+    ]
+  },
+  {
+    "study_accession": "GSE267625",
+    "study_title": "Whole blood transcriptome in long-COVID patients reveals association with lung function and immune response",
+    "organism": "Homo sapiens",
+    "platforms": [
+      {
+        "accession": "GPL24676",
+        "name": "Illumina NovaSeq 6000"
+      }
+    ],
+    "sample_count": 111,
+    "case_sample_count": 0,
+    "control_sample_count": 0,
+    "sample_sources": ["whole blood"],
+    "countries": [],
+    "source_urls": ["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE267625"],
+    "publication_urls": [
+      "https://www.jacionline.org/article/S0091-6749(24)00566-9/fulltext",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC10381397/#notes4"
+    ],
+    "curation_status": "metadata-only, phenotype labels need verification",
+    "pipeline_active": true,
+    "expression_candidate": false,
+    "phenotype_label_status": "needs verification",
+    "curation_notes": [
+      "Whole blood RNA-seq longitudinal post-COVID cohort.",
+      "GEO-level sample names are timepoint/coded records and do not expose a simple verified case/control mapping in the first curation pass.",
+      "Keep as metadata-only until phenotype labels and comparator structure are verified."
+    ],
+    "metadata_quality_flags": [
+      "participant_country_unverified",
+      "metadata_only",
+      "phenotype_labels_need_verification"
+    ]
+  },
+  {
+    "study_accession": "GSE226260",
+    "study_title": "Long COVID involves activation of proinflammatory and immune exhaustion pathways",
+    "organism": "Homo sapiens",
+    "platforms": [
+      {
+        "accession": "GPL24676",
+        "name": "Illumina NovaSeq 6000"
+      },
+      {
+        "accession": "GPL34284",
+        "name": "Illumina NovaSeq X Plus"
+      }
+    ],
+    "sample_count": 331,
+    "case_sample_count": 0,
+    "control_sample_count": 0,
     "sample_sources": ["PBMC"],
     "countries": [],
-    "source_urls": ["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE000002"],
-    "curation_notes": ["Pipeline skeleton record for shape validation only."],
-    "metadata_quality_flags": ["country_unavailable", "skeleton_record"]
+    "source_urls": ["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE226260"],
+    "publication_urls": ["https://pmc.ncbi.nlm.nih.gov/articles/PMC12764429/"],
+    "curation_status": "review candidate",
+    "pipeline_active": false,
+    "expression_candidate": false,
+    "phenotype_label_status": "needs review",
+    "curation_notes": [
+      "Highly relevant PBMC RNA-seq study, but multi-cohort and multi-platform structure should be reviewed after simpler metadata ingestion works."
+    ],
+    "metadata_quality_flags": [
+      "review_only",
+      "multi_cohort",
+      "multi_platform",
+      "participant_country_unverified"
+    ]
+  },
+  {
+    "study_accession": "GSE297499",
+    "study_title": "CSF immune cell alterations in women with neuropsychiatric Long COVID",
+    "organism": "Homo sapiens",
+    "platforms": [
+      {
+        "accession": "GPL34281",
+        "name": "Illumina NovaSeq X"
+      }
+    ],
+    "sample_count": 46,
+    "case_sample_count": 0,
+    "control_sample_count": 0,
+    "sample_sources": ["CSF cells", "PBMC"],
+    "countries": [],
+    "source_urls": ["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE297499"],
+    "publication_urls": [],
+    "curation_status": "review candidate",
+    "pipeline_active": false,
+    "expression_candidate": false,
+    "phenotype_label_status": "needs review",
+    "curation_notes": [
+      "Specialized women-only neuropsychiatric Long COVID cohort with CSF and PBMC compartments; defer until subtype and compartment handling are designed."
+    ],
+    "metadata_quality_flags": [
+      "review_only",
+      "specialized_phenotype",
+      "multiple_sample_sources",
+      "participant_country_unverified"
+    ]
+  },
+  {
+    "study_accession": "GSE235050",
+    "study_title": "scRNA-seq characterization of immune cell types among individuals with or without Long COVID",
+    "organism": "Homo sapiens",
+    "platforms": [
+      {
+        "accession": "GPL24676",
+        "name": "Illumina NovaSeq 6000"
+      }
+    ],
+    "sample_count": 12,
+    "case_sample_count": 0,
+    "control_sample_count": 0,
+    "sample_sources": ["PBMC"],
+    "countries": [],
+    "source_urls": ["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE235050"],
+    "publication_urls": ["https://www.nature.com/articles/s41590-023-01724-6"],
+    "curation_status": "review candidate",
+    "pipeline_active": false,
+    "expression_candidate": false,
+    "phenotype_label_status": "single-cell companion dataset",
+    "curation_notes": [
+      "Single-cell companion to GSE224615; useful later but out of scope for first bulk-expression metadata milestone."
+    ],
+    "metadata_quality_flags": [
+      "review_only",
+      "single_cell",
+      "participant_country_unverified"
+    ]
+  },
+  {
+    "study_accession": "GSE262861",
+    "study_title": "Improvement of immune dysregulation and health-related quality of life in individuals with long COVID at 24-months following SARS-CoV-2 infection",
+    "organism": "Homo sapiens",
+    "platforms": [
+      {
+        "accession": "GPL24676",
+        "name": "Illumina NovaSeq 6000"
+      }
+    ],
+    "sample_count": 11,
+    "case_sample_count": 0,
+    "control_sample_count": 0,
+    "sample_sources": ["PBMC"],
+    "countries": [],
+    "source_urls": ["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE262861"],
+    "publication_urls": [],
+    "curation_status": "review candidate",
+    "pipeline_active": false,
+    "expression_candidate": false,
+    "phenotype_label_status": "needs review",
+    "curation_notes": [
+      "Longitudinal immune recovery study; sample structure appears pooled/timepoint-oriented and needs review before pipeline activation."
+    ],
+    "metadata_quality_flags": [
+      "review_only",
+      "longitudinal",
+      "sample_structure_needs_review",
+      "participant_country_unverified"
+    ]
+  },
+  {
+    "study_accession": "GSE265753",
+    "study_title": "Single cell gene expression profile of peripheral whole blood cells from long COVID patients",
+    "organism": "Homo sapiens",
+    "platforms": [
+      {
+        "accession": "GPL20795",
+        "name": "HiSeq X Ten"
+      }
+    ],
+    "sample_count": 13,
+    "case_sample_count": 0,
+    "control_sample_count": 0,
+    "sample_sources": ["peripheral whole blood cells"],
+    "countries": [],
+    "source_urls": ["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE265753"],
+    "publication_urls": [],
+    "curation_status": "review candidate",
+    "pipeline_active": false,
+    "expression_candidate": false,
+    "phenotype_label_status": "single-cell clinical trial context",
+    "curation_notes": [
+      "Single-cell clinical-trial-context dataset; defer until single-cell and treatment-context handling are designed."
+    ],
+    "metadata_quality_flags": [
+      "review_only",
+      "single_cell",
+      "clinical_trial_context",
+      "participant_country_unverified"
+    ]
   }
 ]

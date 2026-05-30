@@ -21,21 +21,22 @@ def _write_json(path: Path, data: object) -> None:
 
 
 def _is_included(snapshot: BronzeStudySnapshot) -> bool:
-    return (
-        snapshot.organism == "Homo sapiens"
-        and snapshot.sample_count > 0
-        and snapshot.case_sample_count > 0
-        and snapshot.control_sample_count > 0
-    )
+    return snapshot.organism == "Homo sapiens" and snapshot.sample_count > 0
 
 
 def _harmonize_snapshot(snapshot: BronzeStudySnapshot) -> SilverStudyRecord:
     included = _is_included(snapshot)
-    inclusion_notes = (
-        "Passed skeleton inclusion gate."
-        if included
-        else "Failed skeleton inclusion gate."
-    )
+    if not included:
+        inclusion_notes = "Failed skeleton inclusion gate."
+    elif "metadata_only" in snapshot.metadata_quality_flags:
+        inclusion_notes = (
+            "Included for metadata cataloging; phenotype labels need verification "
+            "before expression analysis."
+        )
+    elif snapshot.expression_candidate:
+        inclusion_notes = "Included as a curated metadata and expression candidate."
+    else:
+        inclusion_notes = "Included as a curated metadata candidate."
     return SilverStudyRecord(
         study_accession=snapshot.study_accession,
         study_title=snapshot.study_title,

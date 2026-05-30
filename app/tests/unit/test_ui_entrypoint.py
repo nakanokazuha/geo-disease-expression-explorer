@@ -1,4 +1,6 @@
 import ast
+import subprocess
+import sys
 from pathlib import Path
 
 FORBIDDEN_IMPORT_ROOTS = (
@@ -63,6 +65,19 @@ def _assert_no_forbidden_imports(path: Path) -> None:
 
 def test_streamlit_entrypoint_exists() -> None:
     assert Path("app/ui/app.py").exists()
+
+
+def test_streamlit_entrypoint_runs_when_executed_as_script() -> None:
+    result = subprocess.run(
+        [sys.executable, "app/ui/app.py"],
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "No module named 'app.ui'" not in result.stderr
 
 
 def test_resolve_import_from_module_handles_relative_forbidden_imports() -> None:

@@ -1,6 +1,16 @@
 """Streamlit entrypoint for the Long COVID GEO Expression Explorer."""
 
+# ruff: noqa: E402, I001
+
+import sys
+from pathlib import Path
+
 import streamlit as st
+
+# Bootstrap package imports when Streamlit or Python executes this file by path.
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.ui.data_access import GoldArtifactNotFoundError, load_gold_bundle
 from app.ui.views import render_dashboard_interactions, render_dashboard_overview

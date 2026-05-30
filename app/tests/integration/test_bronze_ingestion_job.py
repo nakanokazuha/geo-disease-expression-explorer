@@ -82,3 +82,85 @@ def test_bronze_ingestion_rejects_config_with_inconsistent_sample_counts(
             storage_root=tmp_path / "storage",
             config_path=config_path,
         )
+
+
+def test_bronze_snapshot_preserves_curated_registry_metadata() -> None:
+    snapshot = BronzeStudySnapshot(
+        study_accession="GSE270045",
+        study_title="Example Long COVID whole blood study",
+        organism="Homo sapiens",
+        platform="GPL34284 Illumina NovaSeq X Plus",
+        platforms=[{"accession": "GPL34284", "name": "Illumina NovaSeq X Plus"}],
+        sample_count=36,
+        case_sample_count=19,
+        control_sample_count=17,
+        sample_sources=["whole blood"],
+        countries=[],
+        source_urls=["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE270045"],
+        publication_urls=["https://pubmed.ncbi.nlm.nih.gov/41205594/"],
+        curation_status="primary metadata + first expression candidate",
+        pipeline_active=True,
+        expression_candidate=True,
+        phenotype_label_status="verified from GEO summary",
+        curation_notes=["Counts are visible in GEO summary."],
+        metadata_quality_flags=["participant_country_unverified"],
+        ingested_at=datetime.now(UTC),
+    )
+
+    assert snapshot.platforms[0].accession == "GPL34284"
+    assert snapshot.publication_urls == ["https://pubmed.ncbi.nlm.nih.gov/41205594/"]
+    assert snapshot.expression_candidate is True
+    assert snapshot.phenotype_label_status == "verified from GEO summary"
+
+
+def test_bronze_snapshot_allows_metadata_only_unverified_group_counts() -> None:
+    snapshot = BronzeStudySnapshot(
+        study_accession="GSE267625",
+        study_title="Metadata-only Long COVID study",
+        organism="Homo sapiens",
+        platform="GPL24676 Illumina NovaSeq 6000",
+        platforms=[{"accession": "GPL24676", "name": "Illumina NovaSeq 6000"}],
+        sample_count=111,
+        case_sample_count=0,
+        control_sample_count=0,
+        sample_sources=["whole blood"],
+        countries=[],
+        source_urls=["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE267625"],
+        publication_urls=[],
+        curation_status="metadata-only, phenotype labels need verification",
+        pipeline_active=True,
+        expression_candidate=False,
+        phenotype_label_status="needs verification",
+        curation_notes=["Phenotype labels need verification."],
+        metadata_quality_flags=["metadata_only", "phenotype_labels_need_verification"],
+        ingested_at=datetime.now(UTC),
+    )
+
+    assert snapshot.case_sample_count == 0
+    assert snapshot.control_sample_count == 0
+    assert "metadata_only" in snapshot.metadata_quality_flags
+
+
+def test_bronze_snapshot_rejects_verified_inconsistent_group_counts() -> None:
+    with pytest.raises(ValidationError, match="sample_count must equal"):
+        BronzeStudySnapshot(
+            study_accession="GSE270045",
+            study_title="Example Long COVID whole blood study",
+            organism="Homo sapiens",
+            platform="GPL34284 Illumina NovaSeq X Plus",
+            platforms=[{"accession": "GPL34284", "name": "Illumina NovaSeq X Plus"}],
+            sample_count=36,
+            case_sample_count=18,
+            control_sample_count=17,
+            sample_sources=["whole blood"],
+            countries=[],
+            source_urls=["https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE270045"],
+            publication_urls=[],
+            curation_status="primary metadata + first expression candidate",
+            pipeline_active=True,
+            expression_candidate=True,
+            phenotype_label_status="verified from GEO summary",
+            curation_notes=["Counts are visible in GEO summary."],
+            metadata_quality_flags=[],
+            ingested_at=datetime.now(UTC),
+        )
